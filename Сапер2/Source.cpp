@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include "Header.h"
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -34,8 +36,9 @@ int main() {
 				cout << "You have chosen the easy level:"
 					"the size of the field is 5x5;"
 					"number of mines 10." << endl;
-				FieldInit(5, 5);
-				Set_Mine(10);
+						
+
+				Game();
 				
 				break;
 			}
@@ -44,8 +47,9 @@ int main() {
 				cout << "You have chosen the medium level:"
 					"the size of the field is 10x10;"
 					"number of mines 30." << endl;
-				FieldInit(10, 10);
-				Set_Mine(30);
+				
+				
+				Game();
 
 				break;
 			}
@@ -54,8 +58,9 @@ int main() {
 				cout << "You have chosen the hard level:"
 					"the size of the field is 15x15;"
 					"number of mines 40." << endl;
-				FieldInit(15,15);
-				Set_Mine(40);
+				
+				
+				Game();
 
 				break;
 			}
@@ -65,8 +70,9 @@ int main() {
 				cin >> userI >> userJ;
 				cout << "Enter the number of min" << endl;
 				cin >> userMineCount;
-				FieldInit(userI, userJ);
-				Set_Mine(userMineCount);
+				
+				
+				Game();
 
 				break;
 			}

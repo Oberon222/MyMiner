@@ -1,9 +1,8 @@
 #pragma once
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <thread>
 using namespace std;
 
-void FieldInit(int m, int n);
-void Set_Mine(int countMine);
-void Shot(int mineX, int mineY);
-
-
-
+void Game();
