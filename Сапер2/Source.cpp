@@ -3,7 +3,6 @@
 #include "Header.h"
 #include <chrono>
 #include <thread>
-
 using namespace std;
 
 int main() {
@@ -12,7 +11,6 @@ int main() {
 	int userI;
 	int userJ;
 	int userMineCount;
-
 
 	do
 	{
@@ -36,7 +34,9 @@ int main() {
 				cout << "You have chosen the easy level:"
 					"the size of the field is 5x5;"
 					"number of mines 10." << endl;
-						
+				InitSizeI(5);
+				InitSizeJ(5);
+				InitCountMine(10);
 
 				Game();
 				
@@ -47,8 +47,10 @@ int main() {
 				cout << "You have chosen the medium level:"
 					"the size of the field is 10x10;"
 					"number of mines 30." << endl;
-				
-				
+				InitSizeI(10);
+				InitSizeJ(10);
+				InitCountMine(30);
+								
 				Game();
 
 				break;
@@ -57,8 +59,10 @@ int main() {
 			{
 				cout << "You have chosen the hard level:"
 					"the size of the field is 15x15;"
-					"number of mines 40." << endl;
-				
+					"number of mines 50." << endl;
+				InitSizeI(15);
+				InitSizeJ(15);
+				InitCountMine(50);
 				
 				Game();
 
@@ -67,10 +71,15 @@ int main() {
 			case 4:
 			{
 				cout << "Enter a field size" << endl;
-				cin >> userI >> userJ;
-				cout << "Enter the number of min" << endl;
+				cout << "Enter size is vertically -> ";
+				cin >> userI;
+				cout << "Enter size is horizontal -> ";
+				cin>> userJ;
+				cout << "Enter the number of min -> ";
 				cin >> userMineCount;
-				
+				InitSizeI(userI);
+				InitSizeJ(userJ);
+				InitCountMine(userMineCount);
 				
 				Game();
 

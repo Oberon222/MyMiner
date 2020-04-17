@@ -3,14 +3,12 @@
 #include <ctime>
 #include <chrono>
 #include <thread>
-
+#include <iomanip>
 using namespace std;
 
-
-
-int sizeI = 5;
-int sizeJ = 5;
-int countMine = 10;
+int sizeI=0;
+int sizeJ=0;
+int countMine=0;
 
 char** Field = new char* [sizeI];
 
@@ -32,6 +30,17 @@ void Timer() {
 	}
 }
 
+void InitSizeI(int a) {
+	sizeI = a;
+}
+
+void InitSizeJ(int b) {
+	sizeJ = b;
+}
+void InitCountMine(int c) {
+	countMine = c;
+}
+
 void FieldInit() {
 
 	Field = new char* [sizeI];
@@ -50,24 +59,36 @@ void DrowField() {
 
 	cout << "  ";
 	for (int i = 0; i < sizeJ; i++) {
-		cout << i + 1 << " ";
+		cout << setw(3) << i + 1;
 	}
 	cout << endl;
 	for (int i = 0; i < sizeJ; i++) {
-		cout << "---";
+		cout << "----";
 	}
 	cout << endl;
 
 	for (int i = 0; i < sizeI; i++) {
-		cout << (char)(i + 65) << "|";
+		cout << static_cast<char>(i + 65) << "|";
 		for (int j = 0; j < sizeJ; j++) {
-			cout << '*' << " ";
+			if (Field[i][j] == '0') {
+				cout << setw(3) << '0';
+			}
+
+			else if (Field[i][j] != ' ' && Field[i][j] != '0'&& Field[i][j] != '$') {
+				cout << setw(3) << Field[i][j];
+			}
+			
+			else if (Field[i][j] == '$'){
+				cout << setw(3) << '*';
+
+			}
+			else {
+				cout << setw(3) << '*';
+			}
 		}
 		cout << endl;
 	}
-
 }
-
 
 void Set_Mine() {
 	srand(time(0));
@@ -92,18 +113,15 @@ bool Shot(int x, int y) {
 	}
 
 	int count = 0;
-	for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
-		for (int j = y - 1; i <= y + 1 && j < sizeJ; j++) {
-			if (i == '$' && j == '$') count++;
-			
+	for (int i = x - 1; i <= x + 1 ; i++) {
+		for (int j = y - 1; j <= y + 1; j++) {
+			if (Field[i][j] == '$') count++;
 		}
 	}
-
-	Field[x][y] = count+48;
+	
+	Field[x][y] = 48+count;
 	return true;
 }
-
-
 
 void Game() {
 	//Timer();
@@ -127,24 +145,25 @@ void Game() {
 
 	} while (Shot(x, y));
 
-	cout << "  ";
+	cout << " ";
 	for (int i = 0; i < sizeJ; i++) {
-		cout << i + 1 << " ";
+		cout << setw(3) << i + 1;
 	}
 	cout << endl;
+
 	for (int i = 0; i < sizeJ; i++) {
-		cout << "---";
+		cout << "----";
 	}
 	cout << endl;
 
 	for (int i = 0; i < sizeI; i++) {
-		cout << (char)(i + 65) << "|";
+		cout << static_cast<char>(i + 65) << "|";
 
 		for (int j = 0; j < sizeJ; j++) {
 			if (Field[i][j] == ' ') {
-				cout << "*";
+				cout << '*' << " ";
 			}
-			
+
 			cout << Field[i][j];
 		}
 		cout << endl;
