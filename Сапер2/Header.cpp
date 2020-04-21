@@ -4,7 +4,9 @@
 #include <chrono>
 #include <thread>
 #include <iomanip>
+#include <Windows.h>
 using namespace std;
+
 
 int sizeI=0;
 int sizeJ=0;
@@ -56,14 +58,15 @@ void FieldInit() {
 }
 
 void DrowField() {
-
-	cout << "  ";
+		
+	cout <<"  ";
 	for (int i = 0; i < sizeJ; i++) {
 		cout << setw(3) << i + 1;
 	}
 	cout << endl;
+	cout << "   ";
 	for (int i = 0; i < sizeJ; i++) {
-		cout << "----";
+		cout << setw(3) << "---";
 	}
 	cout << endl;
 
@@ -74,11 +77,11 @@ void DrowField() {
 				cout << setw(3) << '0';
 			}
 
-			else if (Field[i][j] != ' ' && Field[i][j] != '0'&& Field[i][j] != '$') {
+			else if (Field[i][j] != ' ' && Field[i][j] != '0' && Field[i][j] != 'x') {
 				cout << setw(3) << Field[i][j];
 			}
 			
-			else if (Field[i][j] == '$'){
+			else if (Field[i][j] == 'x'){
 				cout << setw(3) << '*';
 
 			}
@@ -88,6 +91,7 @@ void DrowField() {
 		}
 		cout << endl;
 	}
+
 }
 
 void Set_Mine() {
@@ -101,21 +105,23 @@ void Set_Mine() {
 		mineY = rand() % sizeJ;
 		if (Field[mineX][mineY] == ' ') {
 
-			Field[mineX][mineY] = '$';
+			Field[mineX][mineY] = 'x';
 			i++;
 		}
 	}
 }
 
 bool Shot(int x, int y) {
-	if (Field[x][y] == '$') {
+
+
+	if (Field[x][y] == 'x') {
 		return false;
 	}
 
 	int count = 0;
-	for (int i = x - 1; i <= x + 1 ; i++) {
+	for (int i = x - 1; i <= x + 1 && i<sizeI; i++) {
 		for (int j = y - 1; j <= y + 1; j++) {
-			if (Field[i][j] == '$') count++;
+			if ( Field[i][j] == 'x') count++;
 		}
 	}
 	
@@ -145,14 +151,15 @@ void Game() {
 
 	} while (Shot(x, y));
 
-	cout << " ";
+	cout << "  ";
 	for (int i = 0; i < sizeJ; i++) {
 		cout << setw(3) << i + 1;
 	}
 	cout << endl;
+	cout << "  ";
 
 	for (int i = 0; i < sizeJ; i++) {
-		cout << "----";
+		cout << setw(3) << "---";
 	}
 	cout << endl;
 
@@ -161,10 +168,11 @@ void Game() {
 
 		for (int j = 0; j < sizeJ; j++) {
 			if (Field[i][j] == ' ') {
-				cout << '*' << " ";
+				cout << setw(3) << '*';
+			} 
+			else {
+			cout <<  setw(3) << Field[i][j];
 			}
-
-			cout << Field[i][j];
 		}
 		cout << endl;
 	}
