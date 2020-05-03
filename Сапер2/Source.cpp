@@ -3,9 +3,14 @@
 #include "Header.h"
 #include <chrono>
 #include <thread>
+#include <Windows.h>
+#include <conio.h>
 using namespace std;
 
+
 int main() {
+	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
 	int action;
 	int action2;
 	int userI;
@@ -31,12 +36,13 @@ int main() {
 			{
 			case 1:
 			{
-				cout << "You have chosen the easy level:"
-					"the size of the field is 5x5;"
-					"number of mines 10." << endl;
-				InitSizeI(5);
-				InitSizeJ(5);
-				InitCountMine(10);
+				SetConsoleTextAttribute(hConsole, 10);
+				cout << "You have chosen the EASY level" << endl;
+				SetConsoleTextAttribute(hConsole, 7);
+					
+				InitSizeI(3);
+				InitSizeJ(3);
+				InitCountMine(1);
 
 				Game();
 				
@@ -44,12 +50,13 @@ int main() {
 			}
 			case 2:
 			{
-				cout << "You have chosen the medium level:"
-					"the size of the field is 10x10;"
-					"number of mines 30." << endl;
-				InitSizeI(10);
-				InitSizeJ(10);
-				InitCountMine(30);
+				SetConsoleTextAttribute(hConsole, 14);
+				cout << "You have chosen the MEDIUM level" << endl;
+				SetConsoleTextAttribute(hConsole, 7);
+
+				InitSizeI(16);
+				InitSizeJ(16);
+				InitCountMine(40);
 								
 				Game();
 
@@ -57,12 +64,13 @@ int main() {
 			}
 			case 3:
 			{
-				cout << "You have chosen the hard level:"
-					"the size of the field is 15x15;"
-					"number of mines 50." << endl;
-				InitSizeI(15);
-				InitSizeJ(15);
-				InitCountMine(50);
+				SetConsoleTextAttribute(hConsole, 12);
+				cout << "You have chosen the HARD level." << endl;
+				SetConsoleTextAttribute(hConsole, 7);
+
+				InitSizeI(16);
+				InitSizeJ(30);
+				InitCountMine(100);
 				
 				Game();
 
@@ -70,13 +78,17 @@ int main() {
 			}
 			case 4:
 			{
-				cout << "Enter a field size" << endl;
+				SetConsoleTextAttribute(hConsole, 13);
+				cout << "You can create your own level." << endl;
+				cout << endl;
 				cout << "Enter size is vertically -> ";
 				cin >> userI;
 				cout << "Enter size is horizontal -> ";
 				cin>> userJ;
 				cout << "Enter the number of min -> ";
 				cin >> userMineCount;
+				SetConsoleTextAttribute(hConsole, 7);
+
 				InitSizeI(userI);
 				InitSizeJ(userJ);
 				InitCountMine(userMineCount);

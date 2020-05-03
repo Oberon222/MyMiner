@@ -5,12 +5,16 @@
 #include <thread>
 #include <iomanip>
 #include <Windows.h>
+#include <conio.h>
 using namespace std;
+HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
+//todo: generate mines AFTER first move
 
-int sizeI=0;
-int sizeJ=0;
-int countMine=0;
+int sizeI = 0;
+int sizeJ = 0;
+int countMine = 0;
+int countUnopenedCell = 0;
 
 char** Field = new char* [sizeI];
 
@@ -35,7 +39,6 @@ void Timer() {
 void InitSizeI(int a) {
 	sizeI = a;
 }
-
 void InitSizeJ(int b) {
 	sizeJ = b;
 }
@@ -55,11 +58,13 @@ void FieldInit() {
 			Field[i][j] = ' ';
 		}
 	}
+	countUnopenedCell = sizeI * sizeJ;
 }
 
 void DrowField() {
-		
-	cout <<"  ";
+
+	cout << "  ";
+
 	for (int i = 0; i < sizeJ; i++) {
 		cout << setw(3) << i + 1;
 	}
@@ -69,9 +74,11 @@ void DrowField() {
 		cout << setw(3) << "---";
 	}
 	cout << endl;
+	
 
 	for (int i = 0; i < sizeI; i++) {
-		cout << static_cast<char>(i + 65) << "|";
+		cout << (char)(i + 65) << "|";
+
 		for (int j = 0; j < sizeJ; j++) {
 			if (Field[i][j] == '0') {
 				cout << setw(3) << '0';
@@ -80,18 +87,24 @@ void DrowField() {
 			else if (Field[i][j] != ' ' && Field[i][j] != '0' && Field[i][j] != 'x') {
 				cout << setw(3) << Field[i][j];
 			}
-			
-			else if (Field[i][j] == 'x'){
-				cout << setw(3) << '*';
 
+			else if (Field[i][j] == 'x') {
+				SetConsoleTextAttribute(hConsole, 6);
+
+				cout << setw(3) << '*';
+				SetConsoleTextAttribute(hConsole, 7);
 			}
 			else {
+				SetConsoleTextAttribute(hConsole, 6);
+
 				cout << setw(3) << '*';
+				SetConsoleTextAttribute(hConsole, 7);
 			}
 		}
 		cout << endl;
 	}
-
+	cout << endl;
+	cout << "To win you need to find " << countMine << " mines" << endl;
 }
 
 void Set_Mine() {
@@ -103,54 +116,17 @@ void Set_Mine() {
 	{
 		mineX = rand() % sizeI;
 		mineY = rand() % sizeJ;
+		cout << "X" << mineX << "-Y" << mineY<<endl;   // Ô≥‰Í‡ÁÍ‡, ÍÓÓ‰ËÌ‡ÚË Ï≥Ì
 		if (Field[mineX][mineY] == ' ') {
 
 			Field[mineX][mineY] = 'x';
 			i++;
 		}
 	}
+
 }
 
-bool Shot(int x, int y) {
-
-
-	if (Field[x][y] == 'x') {
-		return false;
-	}
-
-	int count = 0;
-	for (int i = x - 1; i <= x + 1 && i<sizeI; i++) {
-		for (int j = y - 1; j <= y + 1; j++) {
-			if ( Field[i][j] == 'x') count++;
-		}
-	}
-	
-	Field[x][y] = 48+count;
-	return true;
-}
-
-void Game() {
-	//Timer();
-	FieldInit();
-	Set_Mine();
-
-	char x;
-	int y;
-	do
-	{
-		DrowField();
-
-		cout << "Enter the shot coordinates" << endl;
-		cin >> x >> y;
-
-		//œ≈–≈¬Œƒ»ÃŒ À≤“≈–” ’  ” ÷»‘–” ( Œƒ À≤“≈–» ¿ - 65)
-
-		x = x - 65;
-		y = y - 1;
-		system("cls");
-
-	} while (Shot(x, y));
-
+void showMines(int colorCode) {
 	cout << "  ";
 	for (int i = 0; i < sizeJ; i++) {
 		cout << setw(3) << i + 1;
@@ -162,21 +138,164 @@ void Game() {
 		cout << setw(3) << "---";
 	}
 	cout << endl;
-
 	for (int i = 0; i < sizeI; i++) {
-		cout << static_cast<char>(i + 65) << "|";
+		cout << (char)(i + 65) << "|";
 
 		for (int j = 0; j < sizeJ; j++) {
 			if (Field[i][j] == ' ') {
+				SetConsoleTextAttribute(hConsole, 6);
+
 				cout << setw(3) << '*';
-			} 
+				SetConsoleTextAttribute(hConsole, 7);
+
+			}
 			else {
-			cout <<  setw(3) << Field[i][j];
+				SetConsoleTextAttribute(hConsole, colorCode);
+
+				cout << setw(3) << Field[i][j];
+				SetConsoleTextAttribute(hConsole, 7);
+
 			}
 		}
 		cout << endl;
 	}
+	cout << endl;
+	SetConsoleTextAttribute(hConsole, colorCode);
+}
 
+bool youWon() {
+	showMines(10);
+
+	cout << "Y O U    W O N ! ! !" << endl;
+	SetConsoleTextAttribute(hConsole, 7);
+	cout << endl;
 	cout << "Game Over" << endl;
+
+	return false;
+};
+
+bool youAreLoser() {
+	showMines(12);
+
+	cout << "L O S E R ! ! !" << endl;
+	SetConsoleTextAttribute(hConsole, 7);
+	cout << endl;
+	cout << "Game Over" << endl;
+
+	return false;
+};
+
+
+bool Shot(int x, int y) {
+	int count = 0;
+	countUnopenedCell = countUnopenedCell - 1;
+	cout << countUnopenedCell << endl;
+	cout << countMine << endl;
+
+	
+
+	 if (Field[x][y] != 'x') {
+		for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
+			for (int j = y - 1; j <= y + 1; j++) {
+				if (i >= 0 && j >= 0) {
+					if (Field[i][j] == 'x') count++;
+
+				}
+			}
+		}
+		Field[x][y] = 48 + count;
+	}
+	/*else if (Field[x][y] == '0') {
+		for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
+			for (int j = y - 1; j <= y + 1 && j<sizeJ; j++) {
+				if (i >= 0 && j >= 0) {
+					Field[i][j+1] == '0';
+				}
+			}
+		}
+	}*/
+
+
+	/*else (countMine)*/
+	if (countUnopenedCell == countMine) {
+		return youWon();
+	}
+
+	if (Field[x][y] == 'x') { // ÔÓ„‡¯
+		return youAreLoser();
+	}
+
+		return continueGame();
+}
+
+bool continueGame() {
+	return true;
+};
+
+
+void Game() {
+
+	//Timer();
+	FieldInit();
+	Set_Mine();
+
+	char x;
+	int y;
+	do
+	{
+		DrowField();
+		cout << endl;
+		cout << "Enter the shot coordinates" << endl;
+		cin >> x >> y;
+
+		//œ≈–≈¬Œƒ»ÃŒ À≤“≈–” ’  ” ÷»‘–” ( Œƒ À≤“≈–» ¿ - 65)
+		x = x - 65;
+		y = y - 1;
+		system("cls");
+
+	} while (Shot(x, y));
+
+	/*cout << "  ";
+	for (int i = 0; i < sizeJ; i++) {
+		cout << setw(3) << i + 1;
+	}
+	cout << endl;
+	cout << "  ";
+
+	for (int i = 0; i < sizeJ; i++) {
+		cout << setw(3) << "---";
+	}
+	cout << endl;*/
+
+	/*for (int i = 0; i < sizeI; i++) {
+		cout << (char)(i + 65) << "|";
+
+		for (int j = 0; j < sizeJ; j++) {
+			if (Field[i][j] == ' ') {
+				SetConsoleTextAttribute(hConsole, 6);
+
+				cout << setw(3) << '*';
+				SetConsoleTextAttribute(hConsole, 7);
+
+			}
+			else {
+				SetConsoleTextAttribute(hConsole, 12);
+
+				cout << setw(3) << Field[i][j];
+				SetConsoleTextAttribute(hConsole, 7);
+
+			}
+		}
+		cout << endl;
+	}
+	cout << endl;
+	SetConsoleTextAttribute(hConsole, 12);
+
+	cout << "L O S E R ! ! !" << endl;
+	SetConsoleTextAttribute(hConsole, 7);
+	cout << endl;
+	cout << "Game Over" << endl;*/
+
+
 
 }
