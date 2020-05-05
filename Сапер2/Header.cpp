@@ -9,12 +9,11 @@
 using namespace std;
 HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-//todo: generate mines AFTER first move
 
 int sizeI = 0;
 int sizeJ = 0;
 int countMine = 0;
-int countUnopenedCell = 0;
+int countUnopenedCells = 0;
 
 char** Field = new char* [sizeI];
 
@@ -37,7 +36,11 @@ void Timer() {
 }
 
 void InitSizeI(int a) {
-	sizeI = a;
+	if (a > 26)
+	{
+		cout << "The vertical size of the field cannot exceed 26 lines." << endl;
+	}
+	
 }
 void InitSizeJ(int b) {
 	sizeJ = b;
@@ -58,7 +61,7 @@ void FieldInit() {
 			Field[i][j] = ' ';
 		}
 	}
-	countUnopenedCell = sizeI * sizeJ;
+	countUnopenedCells = sizeI * sizeJ;
 }
 
 void DrowField() {
@@ -116,7 +119,7 @@ void Set_Mine() {
 	{
 		mineX = rand() % sizeI;
 		mineY = rand() % sizeJ;
-		cout << "X" << mineX << "-Y" << mineY<<endl;   // підказка, координати мін
+		/*cout << "X" << mineX << "-Y" << mineY<<endl;*/   // підказка, координати мін
 		if (Field[mineX][mineY] == ' ') {
 
 			Field[mineX][mineY] = 'x';
@@ -163,10 +166,10 @@ void showMines(int colorCode) {
 	SetConsoleTextAttribute(hConsole, colorCode);
 }
 
-bool youWon() {
+bool youWin() {
 	showMines(10);
 
-	cout << "Y O U    W O N ! ! !" << endl;
+	cout << "Y O U    W I N ! ! !" << endl;
 	SetConsoleTextAttribute(hConsole, 7);
 	cout << endl;
 	cout << "Game Over" << endl;
@@ -186,51 +189,34 @@ bool youAreLoser() {
 };
 
 
+
 bool Shot(int x, int y) {
 	int count = 0;
-	countUnopenedCell = countUnopenedCell - 1;
-	cout << countUnopenedCell << endl;
-	cout << countMine << endl;
-
-	
+	countUnopenedCells = countUnopenedCells - 1;
+	cout <<"No open cells remain " <<countUnopenedCells << endl;
 
 	 if (Field[x][y] != 'x') {
 		for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
 				if (i >= 0 && j >= 0) {
 					if (Field[i][j] == 'x') count++;
-
 				}
 			}
 		}
 		Field[x][y] = 48 + count;
-	}
-	/*else if (Field[x][y] == '0') {
-		for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
-			for (int j = y - 1; j <= y + 1 && j<sizeJ; j++) {
-				if (i >= 0 && j >= 0) {
-					Field[i][j+1] == '0';
-				}
-			}
-		}
-	}*/
-
-
-	/*else (countMine)*/
-	if (countUnopenedCell == countMine) {
-		return youWon();
+	 }
+	
+	if (countUnopenedCells == countMine) {  //ВИГРАШ
+		return youWin();
 	}
 
-	if (Field[x][y] == 'x') { // програш
+	if (Field[x][y] == 'x') { // ПРОГРАШ
 		return youAreLoser();
 	}
 
-		return continueGame();
+		return true;
 }
 
-bool continueGame() {
-	return true;
-};
 
 
 void Game() {
@@ -254,48 +240,5 @@ void Game() {
 		system("cls");
 
 	} while (Shot(x, y));
-
-	/*cout << "  ";
-	for (int i = 0; i < sizeJ; i++) {
-		cout << setw(3) << i + 1;
-	}
-	cout << endl;
-	cout << "  ";
-
-	for (int i = 0; i < sizeJ; i++) {
-		cout << setw(3) << "---";
-	}
-	cout << endl;*/
-
-	/*for (int i = 0; i < sizeI; i++) {
-		cout << (char)(i + 65) << "|";
-
-		for (int j = 0; j < sizeJ; j++) {
-			if (Field[i][j] == ' ') {
-				SetConsoleTextAttribute(hConsole, 6);
-
-				cout << setw(3) << '*';
-				SetConsoleTextAttribute(hConsole, 7);
-
-			}
-			else {
-				SetConsoleTextAttribute(hConsole, 12);
-
-				cout << setw(3) << Field[i][j];
-				SetConsoleTextAttribute(hConsole, 7);
-
-			}
-		}
-		cout << endl;
-	}
-	cout << endl;
-	SetConsoleTextAttribute(hConsole, 12);
-
-	cout << "L O S E R ! ! !" << endl;
-	SetConsoleTextAttribute(hConsole, 7);
-	cout << endl;
-	cout << "Game Over" << endl;*/
-
-
 
 }

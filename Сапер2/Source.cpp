@@ -40,9 +40,9 @@ int main() {
 				cout << "You have chosen the EASY level" << endl;
 				SetConsoleTextAttribute(hConsole, 7);
 					
-				InitSizeI(3);
-				InitSizeJ(3);
-				InitCountMine(1);
+				InitSizeI(10);
+				InitSizeJ(10);
+				InitCountMine(10);
 
 				Game();
 				
