@@ -3,7 +3,11 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <list>
+#include <fstream>
 using namespace std;
+
+
 
 void InitSizeI(int a);
 void InitSizeJ(int b);

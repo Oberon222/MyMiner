@@ -6,9 +6,10 @@
 #include <iomanip>
 #include <Windows.h>
 #include <conio.h>
+#include <list>
+#include <fstream>
 using namespace std;
 HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
 
 int sizeI = 0;
 int sizeJ = 0;
@@ -16,6 +17,7 @@ int countMine = 0;
 int countUnopenedCells = 0;
 
 char** Field = new char* [sizeI];
+
 
 void Timer() {
 	int hours = 0, minutes = 0, seconds = 0;
@@ -35,12 +37,12 @@ void Timer() {
 	}
 }
 
+
+
 void InitSizeI(int a) {
-	if (a > 26)
-	{
-		cout << "The vertical size of the field cannot exceed 26 lines." << endl;
-	}
-	
+	if (a > 26) cout << "Error" << endl;
+	else
+		sizeI = a;
 }
 void InitSizeJ(int b) {
 	sizeJ = b;
@@ -119,15 +121,16 @@ void Set_Mine() {
 	{
 		mineX = rand() % sizeI;
 		mineY = rand() % sizeJ;
-		/*cout << "X" << mineX << "-Y" << mineY<<endl;*/   // п≥дказка, координати м≥н
+		cout << "X" << mineX << "-Y" << mineY<<endl;   // п≥дказка, координати м≥н
 		if (Field[mineX][mineY] == ' ') {
 
 			Field[mineX][mineY] = 'x';
 			i++;
 		}
 	}
-
 }
+
+
 
 void showMines(int colorCode) {
 	cout << "  ";
@@ -166,10 +169,25 @@ void showMines(int colorCode) {
 	SetConsoleTextAttribute(hConsole, colorCode);
 }
 
+int get_count_of_mines(int x, int y) {
+	int count = 0;
+			if (Field[x][y] != 'x') {
+				for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
+					for (int j = y - 1; j <= y + 1; j++) {
+						if (i >= 0 && j >= 0) {
+							if (Field[i][j] == 'x') count++;
+						}
+					}
+				}
+				Field[x][y] = 48 + count;
+		}
+return count;
+}
+
 bool youWin() {
 	showMines(10);
 
-	cout << "Y O U    W I N ! ! !" << endl;
+	cout << "Y O U    W O N ! ! !" << endl;
 	SetConsoleTextAttribute(hConsole, 7);
 	cout << endl;
 	cout << "Game Over" << endl;
@@ -189,22 +207,73 @@ bool youAreLoser() {
 };
 
 
+void checkZero(int x, int y) {
+	bool stop = false;
+
+	if (get_count_of_mines(x,y) == 0) {
+		for (int i = x+1; i < sizeI && stop == false; i++) {
+			if (get_count_of_mines(i,y) == 0) {
+				countUnopenedCells = countUnopenedCells - 1;
+			} else {
+				stop = true;
+			}
+		}
+		stop = false;
+
+		for (int i = x - 1; i >=0 && stop == false; i--) {
+			if (get_count_of_mines(i, y) == 0) {
+				countUnopenedCells = countUnopenedCells - 1;
+			} else {
+				stop = true;
+			}
+		}
+		stop = false;
+		for (int j = y + 1; j < sizeJ && stop == false; j++) {
+			if (get_count_of_mines(x, j) == 0) {
+				countUnopenedCells = countUnopenedCells - 1;
+			} else {
+				stop = true;
+			}
+		}
+		stop = false;
+		for (int j = y - 1; j >= 0 && stop == false; j--) {
+			if (get_count_of_mines(x, j) == 0) {
+				countUnopenedCells = countUnopenedCells - 1;
+			} else {
+				stop = true;
+			}
+		}
+	}
+}
+	
+
+
+
 
 bool Shot(int x, int y) {
 	int count = 0;
 	countUnopenedCells = countUnopenedCells - 1;
-	cout <<"No open cells remain " <<countUnopenedCells << endl;
+	cout <<"no open cells remain " << countUnopenedCells << endl;
+	//cout <<"Check coordinate X = " <<x <<"Check coordinate Y = " << y << endl;
 
-	 if (Field[x][y] != 'x') {
-		for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
-			for (int j = y - 1; j <= y + 1; j++) {
-				if (i >= 0 && j >= 0) {
-					if (Field[i][j] == 'x') count++;
-				}
-			}
-		}
-		Field[x][y] = 48 + count;
-	 }
+	 //if (Field[x][y] != 'x') {
+		//for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
+		//	for (int j = y - 1; j <= y + 1; j++) {
+		//		if (i >= 0 && j >= 0) {
+		//			//cout << "Check coordinate I = " << i << "Check coordinate J = " << j << endl;
+		//			if (Field[i][j] == 'x') count++;
+		//		}
+
+		//	}
+		//}
+		//Field[x][y] = 48 + count;
+	 //}
+	
+	if (get_count_of_mines(x, y) == 0) {
+		checkZero(x, y);
+	};
+	 
+		 
 	
 	if (countUnopenedCells == countMine) {  //¬»√–јЎ
 		return youWin();

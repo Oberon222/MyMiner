@@ -5,6 +5,8 @@
 #include <thread>
 #include <Windows.h>
 #include <conio.h>
+#include <list>
+#include <fstream>
 using namespace std;
 
 
@@ -81,6 +83,7 @@ int main() {
 				SetConsoleTextAttribute(hConsole, 13);
 				cout << "You can create your own level." << endl;
 				cout << endl;
+				cout << "The number of lines should not exceed 26." << endl;
 				cout << "Enter size is vertically -> ";
 				cin >> userI;
 				cout << "Enter size is horizontal -> ";
@@ -94,7 +97,6 @@ int main() {
 				InitCountMine(userMineCount);
 				
 				Game();
-
 				break;
 			}
 			}
