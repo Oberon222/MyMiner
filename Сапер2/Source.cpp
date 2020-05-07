@@ -9,7 +9,6 @@
 #include <fstream>
 using namespace std;
 
-
 int main() {
 	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -27,7 +26,6 @@ int main() {
 
 		switch (action)
 		{
-
 		case 1:
 		{
 			cout << "Choose the difficulty level of the game: "
@@ -81,21 +79,25 @@ int main() {
 			case 4:
 			{
 				SetConsoleTextAttribute(hConsole, 13);
-				cout << "You can create your own level." << endl;
-				cout << endl;
-				cout << "The number of lines should not exceed 26." << endl;
-				cout << "Enter size is vertically -> ";
-				cin >> userI;
+				do
+				{
+					cout << "You can create your own level." << endl;
+					cout << endl;
+			
+					cout << "Enter size is vertically (max 26)-> ";
+					cin >> userI;
+								
+				} while (userI>26);
+
 				cout << "Enter size is horizontal -> ";
-				cin>> userJ;
+				cin >> userJ;
 				cout << "Enter the number of min -> ";
 				cin >> userMineCount;
 				SetConsoleTextAttribute(hConsole, 7);
-
 				InitSizeI(userI);
 				InitSizeJ(userJ);
 				InitCountMine(userMineCount);
-				
+
 				Game();
 				break;
 			}
@@ -110,7 +112,6 @@ int main() {
 		}
 		}
 	} while (action != 2);
-
 
 	system("pause");
 	return 0;

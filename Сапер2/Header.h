@@ -7,17 +7,15 @@
 #include <fstream>
 using namespace std;
 
-
-
 void InitSizeI(int a);
 void InitSizeJ(int b);
 void InitCountMine(int c);
-void FieldInit();
-void DrowField();
+void Field_Init();
+void Drow_Field();
 void Set_Mine();
-void showMines(int colorCode);
-bool youWin();
-bool youAreLoser();
+void show_Mines(int colorCode);
+bool you_Win();
+bool you_Are_Loser();
 bool Shot(int x, int y);
 
 void Game();

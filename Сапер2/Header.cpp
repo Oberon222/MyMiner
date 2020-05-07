@@ -51,7 +51,7 @@ void InitCountMine(int c) {
 	countMine = c;
 }
 
-void FieldInit() {
+void Field_Init() {
 
 	Field = new char* [sizeI];
 
@@ -66,7 +66,7 @@ void FieldInit() {
 	countUnopenedCells = sizeI * sizeJ;
 }
 
-void DrowField() {
+void Drow_Field() {
 
 	cout << "  ";
 
@@ -121,7 +121,7 @@ void Set_Mine() {
 	{
 		mineX = rand() % sizeI;
 		mineY = rand() % sizeJ;
-		cout << "X" << mineX << "-Y" << mineY<<endl;   // ï³äêàçêà, êîîðäèíàòè ì³í
+		/*cout << "X" << mineX << "-Y" << mineY<<endl;*/   // ï³äêàçêà, êîîðäèíàòè ì³í
 		if (Field[mineX][mineY] == ' ') {
 
 			Field[mineX][mineY] = 'x';
@@ -132,7 +132,7 @@ void Set_Mine() {
 
 
 
-void showMines(int colorCode) {
+void show_Mines(int colorCode) {
 	cout << "  ";
 	for (int i = 0; i < sizeJ; i++) {
 		cout << setw(3) << i + 1;
@@ -180,12 +180,13 @@ int get_count_of_mines(int x, int y) {
 					}
 				}
 				Field[x][y] = 48 + count;
+				countUnopenedCells = countUnopenedCells - 1;
 		}
 return count;
 }
 
-bool youWin() {
-	showMines(10);
+bool you_Win() {
+	show_Mines(10);
 
 	cout << "Y O U    W O N ! ! !" << endl;
 	SetConsoleTextAttribute(hConsole, 7);
@@ -195,8 +196,8 @@ bool youWin() {
 	return false;
 };
 
-bool youAreLoser() {
-	showMines(12);
+bool you_Are_Loser() {
+	show_Mines(12);
 
 	cout << "L O S E R ! ! !" << endl;
 	SetConsoleTextAttribute(hConsole, 7);
@@ -206,81 +207,87 @@ bool youAreLoser() {
 	return false;
 };
 
-
-void checkZero(int x, int y) {
+void check_Zero(int x, int y) {
 	bool stop = false;
-
-	if (get_count_of_mines(x,y) == 0) {
-		for (int i = x+1; i < sizeI && stop == false; i++) {
-			if (get_count_of_mines(i,y) == 0) {
-				countUnopenedCells = countUnopenedCells - 1;
-			} else {
-				stop = true;
-			}
-		}
-		stop = false;
-
-		for (int i = x - 1; i >=0 && stop == false; i--) {
-			if (get_count_of_mines(i, y) == 0) {
-				countUnopenedCells = countUnopenedCells - 1;
-			} else {
-				stop = true;
-			}
-		}
-		stop = false;
-		for (int j = y + 1; j < sizeJ && stop == false; j++) {
-			if (get_count_of_mines(x, j) == 0) {
-				countUnopenedCells = countUnopenedCells - 1;
-			} else {
-				stop = true;
-			}
-		}
-		stop = false;
-		for (int j = y - 1; j >= 0 && stop == false; j--) {
-			if (get_count_of_mines(x, j) == 0) {
-				countUnopenedCells = countUnopenedCells - 1;
-			} else {
-				stop = true;
-			}
-		}
-	}
-}
 	
+		for (int i = x+1; i < sizeI /*&& stop == false*/; i++) { 
+			if (Field[i][y] == ' ' && stop == false) {
+				if (get_count_of_mines(i, y) == 0) {
+		
+					check_Zero(i, y);
+				}
+				else {
+					stop = true;
+				}
+			}
+			else {
+				stop = true;
+			}
+			
+		}
 
+		stop = false;
 
+		for (int i = x - 1; i >=0 /*&& stop == false*/; i--) {
+			if (Field[i][y] == ' ' && stop == false) {
+				if (get_count_of_mines(i, y) == 0) {
+					check_Zero(i, y);
+				}
+				else {
+					stop = true;
+				}
+			}
+			else {
+				stop = true;
+			}
+		}
+		stop = false;
 
+		for (int j = y + 1; j < sizeJ /*&& stop == false*/; j++) {
+			if (Field[x][j] == ' ' && stop == false) {
+				if (get_count_of_mines(x, j) == 0) {
+					check_Zero(x, j);
+				}
+				else {
+					stop = true;
+				}
+				
+			}
+			else {
+				stop = true;
+			}
+		}
+		stop = false;
+
+		for (int j = y - 1; j >= 0 /*&& stop == false*/; j--) {
+			if (Field[x][j] == ' ' && stop == false) {
+				if (get_count_of_mines(x, j) == 0) {
+					check_Zero(x, j);
+				}
+				else {
+					stop = true;
+				}
+			}
+			else {
+				stop = true;
+			}
+		}
+}
 
 bool Shot(int x, int y) {
-	int count = 0;
-	countUnopenedCells = countUnopenedCells - 1;
-	cout <<"no open cells remain " << countUnopenedCells << endl;
-	//cout <<"Check coordinate X = " <<x <<"Check coordinate Y = " << y << endl;
-
-	 //if (Field[x][y] != 'x') {
-		//for (int i = x - 1; i <= x + 1 && i < sizeI; i++) {
-		//	for (int j = y - 1; j <= y + 1; j++) {
-		//		if (i >= 0 && j >= 0) {
-		//			//cout << "Check coordinate I = " << i << "Check coordinate J = " << j << endl;
-		//			if (Field[i][j] == 'x') count++;
-		//		}
-
-		//	}
-		//}
-		//Field[x][y] = 48 + count;
-	 //}
 	
 	if (get_count_of_mines(x, y) == 0) {
-		checkZero(x, y);
+		check_Zero(x, y);
 	};
-	 
+	cout << "no open cells remain " << countUnopenedCells << endl;
 		 
 	
 	if (countUnopenedCells == countMine) {  //ÂÈÃÐÀØ
-		return youWin();
+		return you_Win();
 	}
 
 	if (Field[x][y] == 'x') { // ÏÐÎÃÐÀØ
-		return youAreLoser();
+		return you_Are_Loser();
 	}
 
 		return true;
@@ -290,15 +297,14 @@ bool Shot(int x, int y) {
 
 void Game() {
 
-	//Timer();
-	FieldInit();
+	Field_Init();
 	Set_Mine();
 
 	char x;
 	int y;
 	do
 	{
-		DrowField();
+		Drow_Field();
 		cout << endl;
 		cout << "Enter the shot coordinates" << endl;
 		cin >> x >> y;
